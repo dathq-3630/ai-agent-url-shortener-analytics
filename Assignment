@@ -1,0 +1,3 @@
+URL Shortener with Analytics – Link Shortening with Statistics
+Requirement: Develop a URL shortening service with click analytics.
+Description: Users create short URLs, and the system tracks the number of clicks, source, and device (simplified). A dashboard provides daily/weekly statistics and top links.
