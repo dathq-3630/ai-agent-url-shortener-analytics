@@ -54,6 +54,8 @@ Three phases align with **Spec → Plan → Implement**: foundation first, then 
 
 **Checkpoint**: Assignment feature list satisfied; SPEC traceability reviewed; demo script ready.
 
+**Delivered**: `GET /api/export?days=` (per-link totals, UTF‑8 CSV + BOM), shared date helpers in `web/src/lib/dashboard/date-range.ts`, dashboard **Export CSV** button, root [`README.md`](../README.md).
+
 ---
 
 ## Phase summary

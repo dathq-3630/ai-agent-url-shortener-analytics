@@ -57,7 +57,7 @@ This document maps the assignment requirements to a concrete technical implement
 
 | Requirement | Behavior | Implementation |
 |-------------|----------|----------------|
-| Export analytics or link list | Downloadable CSV for spreadsheets. | **Route**: `GET /api/export.csv` (or `/api/analytics/export`) with query params matching dashboard filters (`from`, `to`). **Server**: Supabase query → CSV string → `Content-Type: text/csv`, `Content-Disposition: attachment`. **Default export shape**: **per-link totals** within the selected date range (one row per link with aggregate click count), not a time series—simple and assignment-complete. |
+| Export analytics or link list | Downloadable CSV for spreadsheets. | **Route**: `GET /api/export?days=N` (same rolling **last N days** window as `/dashboard`; session required). Columns: **`slug`, `destination_url`, `click_count`**. UTF-8 with BOM for Excel. Dashboard includes an **Export CSV** button wired to this handler. |
 
 **Acceptance criteria**
 

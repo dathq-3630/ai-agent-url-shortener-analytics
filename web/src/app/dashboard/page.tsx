@@ -7,19 +7,14 @@ import {
   type ClickRow,
   type LinkRow,
 } from "@/lib/dashboard/aggregate";
+import {
+  analyticsWindow,
+  parseDashboardDays,
+  type DashboardSearchParams,
+} from "@/lib/dashboard/date-range";
+import { buttonVariants } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/server";
 import { CreateLinkForm } from "./create-link-form";
-
-type Search = {
-  days?: string;
-  view?: string;
-};
-
-function parseDays(raw: string | undefined): number {
-  const n = Number.parseInt(raw ?? "7", 10);
-  if (Number.isNaN(n)) return 7;
-  return Math.min(90, Math.max(1, n));
-}
 
 function formatDayLabel(isoDate: string): string {
   const d = new Date(`${isoDate}T12:00:00.000Z`);
@@ -74,17 +69,14 @@ function SeriesChart({
 export default async function DashboardPage({
   searchParams,
 }: {
-  searchParams: Promise<Search>;
+  searchParams: Promise<DashboardSearchParams>;
 }) {
   const sp = await searchParams;
-  const days = parseDays(sp.days);
+  const days = parseDashboardDays(sp.days);
   const view = sp.view === "week" ? "week" : "day";
 
   const supabase = await createClient();
-  const end = new Date();
-  const start = new Date();
-  start.setUTCDate(start.getUTCDate() - days);
-  start.setUTCHours(0, 0, 0, 0);
+  const { start, end } = analyticsWindow(days);
 
   const { data: linksRaw, error: linksError } = await supabase
     .from("links")
@@ -142,7 +134,18 @@ export default async function DashboardPage({
               Clicks in the selected range (your links only).
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              href={`/api/export?days=${days}`}
+              className={buttonVariants({ variant: "outline", size: "sm" })}
+              prefetch={false}
+            >
+              Export CSV
+            </Link>
+          </div>
+        </div>
+
+        <div className="mt-6 flex flex-wrap gap-2">
             <span className="mr-2 self-center text-xs font-medium uppercase tracking-wide text-neutral-500">
               Range
             </span>
@@ -181,7 +184,6 @@ export default async function DashboardPage({
               </Link>
             ))}
           </div>
-        </div>
 
         <div className="mt-8 grid gap-8 lg:grid-cols-2">
           <div>
